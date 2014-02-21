@@ -2,89 +2,92 @@
 
 import inspect
 import os
-import sys
-
-import django
-
 import pkgutil
-
-RESULTS = []
+import sys
 
 
 def is_mod_function(mod, func):
     return inspect.isfunction(func) and inspect.getmodule(func) == mod
 
+
 def list_functions(mod):
-    return [func.__name__ for func in mod.__dict__.itervalues() 
+    return [func.__name__ for func in mod.__dict__.itervalues()
             if is_mod_function(mod, func)]
+
 
 def is_mod_class(mod, klass):
     return inspect.isclass(klass) and inspect.getmodule(klass) == mod
 
+
 def list_classes(mod):
-    return [klass.__name__ for klass in mod.__dict__.itervalues() 
+    return [klass.__name__ for klass in mod.__dict__.itervalues()
             if is_mod_class(mod, klass)]
 
-def try_to_find(module, string_to_find):
 
-    prefix = module.__name__ + "."
-    try:
-        class_names = list_classes(sys.modules[module.__name__])
-        
-        if string_to_find in class_names:
-            return prefix + string_to_find
+class DjangoImportSeeker(object):
 
-        function_names = list_functions(sys.modules[module.__name__])
+    def __init__(self, string_to_find=None, package=None):
 
-        if string_to_find in function_names:
-            return prefix + string_to_find
+        self.string_to_find = string_to_find
+        self.package = package
 
-    except ImportError:
-        pass
+    def process_seek(self):
 
-# this is the package we are inspecting -- for example 'django' from stdlib
-def get_submodules_of_module(module_name, class_to_find):
+        self.results = []
+        self.get_submodules_of_module(self.package)
+        return self.results
 
-    module = __import__(module_name, fromlist="dummy")
-    prefix = module.__name__ + "."
+    def try_to_find(self, module):
 
-    print('Processing module ' + module.__name__)
-    
-    result = try_to_find(module, class_to_find)
-    
-    if result:
-        return result
+        prefix = module.__name__ + "."
+        try:
+            class_names = list_classes(sys.modules[module.__name__])
 
-    try:
-        submodules = [modname for importer, modname, ispkg in pkgutil.iter_modules(module.__path__, prefix)]
+            if self.string_to_find in class_names:
+                return prefix + self.string_to_find
 
-        print('Submodules of ' + module_name + ' are : ' + ' '.join(submodules))
+            function_names = list_functions(sys.modules[module.__name__])
 
-        for submodule in submodules:
-            result = get_submodules_of_module(submodule, class_to_find)
+            if self.string_to_find in function_names:
+                return prefix + self.string_to_find
 
-            if result:
-                RESULTS.append(result)
+        except ImportError:
+            pass
 
-    except AttributeError:
-        print('End path for ' + module.__name__)
-    except Exception, e:
-        print('We have to manage this exception')
-        print(str(e))
+    # this is the package we are inspecting -- for example 'django' from stdlib
+    def get_submodules_of_module(self, module_name):
 
-    return result
+        module = __import__(module_name, fromlist="dummy")
+        prefix = module.__name__ + "."
+
+        result = self.try_to_find(module)
+
+        if result:
+            self.results.append(result)
+
+        try:
+            submodules = [modname for importer, modname, ispkg in
+                          pkgutil.iter_modules(module.__path__, prefix)]
+
+            for submodule in submodules:
+                self.get_submodules_of_module(submodule)
+
+        except AttributeError:
+            pass
+        except Exception, e:
+            print('We have to manage this exception')
+            print(str(e))
+
 
 if __name__ == '__main__':
 
     module_name = 'django'
     os.environ['DJANGO_SETTINGS_MODULE'] = 'dummy_settings'
 
-    cont = True
+    dis = DjangoImportSeeker(sys.argv[1], module_name)
+    results_found = dis.process_seek()
 
-    result = get_submodules_of_module(module_name, sys.argv[1])
-
-    if RESULTS:
-        print('Result found : ' + " ".join(RESULTS))
+    if results_found:
+        print('>>> ' + " ".join(results_found))
     else:
         print('No result found')
-
