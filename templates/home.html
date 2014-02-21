@@ -1,2 +1,9 @@
 
-Module searched is : {{ result }}
+<form action='/search' method='POST'>
+    <input name="string_to_find"/>
+    <button type="submit">Envoyer</button>
+</form>
+
+{% if result %}
+    Module searched is : >>> {{ result }} <<<
+{% endif %}
