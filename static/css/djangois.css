@@ -1,0 +1,14 @@
+
+#main-container {
+    font-family: 'Source Sans Pro', 'sans-serif';
+    margin-top: 5em;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 1em;
+}
+
+button {
+    margin-top: 1em;
+}
