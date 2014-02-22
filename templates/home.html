@@ -14,9 +14,9 @@
 
     <div id="results">
         {% if result %}
-        <input type="text" disabled="disabled" placeholder="Result here" value="{{ result }}" class="form-control search-success"/>
+        <input type="text" readonly="readonly" placeholder="Result here" value="{{ result }}" class="form-control search-success"/>
         {% else %}
-        <input type="text" disabled="disabled" placeholder="No Result" class="form-control"/>
+        <input type="text" readonly="readonly" placeholder="No Result" class="form-control"/>
         {% endif %}
     </div>
 
