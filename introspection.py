@@ -75,8 +75,7 @@ class DjangoImportSeeker(object):
         except AttributeError:
             pass
         except Exception, e:
-            print('We have to manage this exception')
-            print(str(e))
+            pass
 
 
 if __name__ == '__main__':

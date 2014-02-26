@@ -1,23 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="/static/css/djangois.css">
+<head>
+    <title>Django Import Seeker</title>
 
-<div id="main-container" class="container">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/djangois.css">
+</head>
 
-    <h1>Django Import Seeker</h1>
+<body>
+    <div id="main-container" class="container">
 
-    <form action='/search' method='POST'>
-        <input type="text" name="string_to_find" placeholder="Type a function/class from django" class="form-control"/>
-        <button type="submit" class="btn btn-default">Chercher</button>
-    </form>
+        <h1>Django Import Seeker</h1>
 
-    <div id="results">
-        {% if result %}
-        <input type="text" readonly="readonly" placeholder="Result here" value="{{ result }}" class="form-control search-success"/>
-        {% else %}
-        <input type="text" readonly="readonly" placeholder="No Result" class="form-control"/>
-        {% endif %}
+        <form action='/search' method='POST'>
+            <input type="text" name="string_to_find" placeholder="Type a function/class from django" class="form-control"/>
+            <button type="submit" class="btn btn-default">Chercher</button>
+        </form>
+
+        <div id="results">
+            {% if result %}
+            <input type="text" readonly="readonly" placeholder="Result here" value="{{ result }}" class="form-control search-success"/>
+            {% else %}
+            <input type="text" readonly="readonly" placeholder="No Result" class="form-control"/>
+            {% endif %}
+        </div>
+
     </div>
+</body>
 
-</div>
+</html>
