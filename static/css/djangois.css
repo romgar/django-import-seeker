@@ -29,3 +29,7 @@ input {
     margin-top: 5em;
     text-align: center;
 }
+
+form {
+    margin-bottom: 1em;
+}
